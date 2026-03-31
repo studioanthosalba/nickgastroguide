@@ -1,0 +1,30 @@
+{
+  "name": "nickgastroguide",
+  "version": "0.4.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@insforge/sdk": "latest",
+    "clsx": "^2.1.1",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "next": "14.2.14",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "tailwindcss": "latest",
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
