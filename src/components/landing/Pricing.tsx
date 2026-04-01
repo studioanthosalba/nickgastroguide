@@ -1,92 +1,50 @@
-'use client'
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
-
-const tiers = [
-  {
-    name: "Base",
-    price: "0",
-    description: "Per piccoli ristoranti che vogliono iniziare.",
-    features: ["Menu AI Digitalizzato", "QR Code Statico", "Supporto 5 Lingue", "Allergeni Base"]
-  },
-  {
-    name: "Pro",
-    price: "29",
-    description: "La soluzione completa per il tuo business.",
-    features: ["Tutto nel piano Base", "Guida Turistica AI", "QR Code Dinamico", "30+ Lingue", "Analisi Visite", "Supporto Prioritario"],
-    popular: true
-  },
-  {
-    name: "Enterprise",
-    price: "Su Misura",
-    description: "Per catene e grandi realtà.",
-    features: ["Tutto nel piano Pro", "Multi-ristorante", "Integrazione POS", "Account Manager", "SLA Garantita"]
-  }
-]
-
 export default function Pricing() {
   return (
-    <section id="prezzi" className="py-24 bg-black relative">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tighter">
-            Piani <span className="text-violet-500">Semplici</span> e Trasparenti
+    <>
+      {/* 6. PRICING SECTION */}
+      <section className="bg-primary-container py-32 px-8" id="pricing">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="font-headline text-4xl md:text-5xl text-on-primary-container mb-8">
+            Se ti porta anche solo <span className="underline decoration-on-primary-container/30 decoration-4 underline-offset-8">1 tavolo</span> in più al giorno, Nick si ripaga da solo.
           </h2>
-          <p className="text-zinc-500 max-w-lg mx-auto">
-            Scegli il piano più adatto al tuo ristorante. Nessun costo nascosto.
+          <p className="text-on-primary-container/80 text-xl mb-16 max-w-2xl mx-auto">
+            Non è un costo, è l'investimento più redditizio per la tua sala. Scegli il piano adatto alla tua ambizione.
           </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {tiers.map((tier, i) => (
-            <motion.div
-              key={i}
-              className={`group flex flex-col p-8 rounded-3xl border transition-all duration-500 ${
-                tier.popular 
-                  ? 'bg-zinc-900 border-violet-500/50 shadow-[0_0_40px_rgba(139,92,246,0.1)] relative' 
-                  : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700'
-              }`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              {tier.popular && (
-                <span className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-violet-500 text-white text-xs font-bold rounded-full tracking-widest uppercase">
-                  IL PIÙ SCELTO
-                </span>
-              )}
-              
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{tier.name}</h3>
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-4xl font-black text-white">€{tier.price}</span>
-                  {tier.price !== "Su Misura" && <span className="text-zinc-500 font-medium">/mese</span>}
-                </div>
-                <p className="text-zinc-500 text-sm leading-relaxed">{tier.description}</p>
+          <div className="bg-surface p-12 shadow-2xl relative overflow-hidden text-left">
+            <div className="absolute top-0 right-0 bg-primary text-on-primary font-label text-[10px] font-black uppercase tracking-widest px-8 py-2 transform rotate-45 translate-x-8 translate-y-4">
+              Popolare
+            </div>
+            <div className="flex flex-col md:flex-row justify-between gap-12">
+              <div>
+                <h3 className="font-headline text-4xl mb-4 text-primary">Piano Excellence</h3>
+                <p className="text-on-surface-variant text-sm mb-8">Accesso completo all'ecosistema Nick GastroGuide.</p>
+                <ul className="space-y-4 mb-12">
+                  <li className="flex items-center gap-3 text-sm"><span className="material-symbols-outlined text-primary text-lg">check_circle</span> Menu AI Illimitato</li>
+                  <li className="flex items-center gap-3 text-sm"><span className="material-symbols-outlined text-primary text-lg">check_circle</span> 50+ Lingue in tempo reale</li>
+                  <li className="flex items-center gap-3 text-sm"><span className="material-symbols-outlined text-primary text-lg">check_circle</span> Integrazione Guida Locale</li>
+                  <li className="flex items-center gap-3 text-sm"><span className="material-symbols-outlined text-primary text-lg">check_circle</span> Analytics Avanzate</li>
+                </ul>
               </div>
-
-              <ul className="space-y-4 mb-10 flex-grow">
-                {tier.features.map((feature, j) => (
-                  <li key={j} className="flex items-start gap-3 text-zinc-300 text-sm">
-                    <Check className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <button className={`w-full py-4 rounded-xl font-bold transition-all duration-300 transform group-hover:scale-[1.02] ${
-                tier.popular 
-                  ? 'bg-violet-500 hover:bg-violet-600 text-white shadow-lg shadow-violet-500/10' 
-                  : 'bg-white hover:bg-zinc-200 text-black'
-              }`}>
-                Inizia Ora
-              </button>
-            </motion.div>
-          ))}
+              <div className="md:text-right flex flex-col justify-center">
+                <div className="flex flex-col gap-2 mb-8">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-on-surface-variant uppercase tracking-widest font-bold mb-1 opacity-60">Primo Acquisto</span>
+                    <div className="font-headline text-5xl mb-2 text-primary italic">70€</div>
+                  </div>
+                  <div className="w-full h-px bg-outline-variant/20 my-2"></div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-on-surface-variant uppercase tracking-widest font-bold mb-1 opacity-60">Poi Mensilmente</span>
+                    <div className="font-headline text-4xl text-on-surface">22€<span className="text-xl font-normal opacity-60">/mese</span></div>
+                  </div>
+                </div>
+                <button className="w-full md:w-auto px-12 py-5 bg-primary text-on-primary font-label text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_10px_30px_rgba(255,181,158,0.2)]">
+                  Sblocca il Potenziale
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  )
+      </section>
+    </>
+  );
 }

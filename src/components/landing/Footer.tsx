@@ -1,33 +1,50 @@
-'use client'
-import React from 'react'
+import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="py-16 bg-[#0a0a0a] border-t border-zinc-900/50">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="flex items-center gap-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-2xl flex items-center justify-center font-black text-white text-2xl shadow-lg shadow-violet-500/20">
-              G
+    <>
+      {/* Footer */}
+      <footer className="bg-[#131313] w-full border-t border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-[1440px] mx-auto">
+          <div className="space-y-6">
+            <div className="text-xl font-headline italic text-[#ffb59e]">Nick GastroGuide</div>
+            <div className="space-y-2">
+              <p className="text-white/40 text-[10px] uppercase tracking-widest font-black">Studio Anthos Alba</p>
+              <p className="text-white/40 text-[10px] uppercase tracking-widest font-black">Founder: Antonio Magazzù</p>
+              <a href="mailto:info@nickgastroguide.it" className="text-white/40 hover:text-[#ffb59e] transition-colors text-[10px] uppercase tracking-widest font-black">info@nickgastroguide.it</a>
             </div>
-            <div>
-              <span className="text-white font-black text-2xl tracking-tighter block leading-none">GastroGuide</span>
-              <span className="text-zinc-600 text-[10px] uppercase tracking-widest font-bold">L'AI per il tuo Ristorante</span>
-            </div>
+            <p className="text-white/40 text-xs leading-relaxed max-w-[200px]">Social Sustainability & Culinary Excellence. Per un futuro del gusto consapevole.</p>
           </div>
-          
-          <div className="flex flex-wrap justify-center gap-x-12 gap-y-4 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-            <a href="#" className="hover:text-white transition-colors duration-300">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors duration-300">Termini e Condizioni</a>
-            <a href="#" className="hover:text-white transition-colors duration-300">Contatti</a>
-            <a href="/recruiting" className="text-amber-500/80 hover:text-amber-500 transition-colors duration-300">Lavora con noi</a>
+          <div>
+            <h4 className="font-label text-sm tracking-wide uppercase text-[#ffb59e] mb-8">Piattaforma</h4>
+            <ul className="space-y-4">
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/demo-chat">Guarda la demo</Link></li>
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/sustainability">Sustainability Report</Link></li>
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/sdg-impact">SDG Impact</Link></li>
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/affiliation">Affiliazione</Link></li>
+            </ul>
           </div>
-          
-          <div className="text-xs text-zinc-600 font-medium">
-            © {new Date().getFullYear()} GastroGuide AI. <span className="hidden sm:inline">Tutti i diritti riservati.</span>
+          <div>
+            <h4 className="font-label text-sm tracking-wide uppercase text-[#ffb59e] mb-8">Legale</h4>
+            <ul className="space-y-4">
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/privacy">Privacy Policy</Link></li>
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/terms">Terms of Service</Link></li>
+              <li><Link className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-xs uppercase tracking-widest" href="/cookies">Cookie Policy</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-label text-sm tracking-wide uppercase text-[#ffb59e] mb-8">Social</h4>
+            <ul className="space-y-4">
+              <li><a className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-[10px] uppercase tracking-widest font-black" href="https://www.instagram.com/anthosalba/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a className="text-white/40 hover:text-[#ffb59e] transition-all hover:translate-x-1 inline-block text-[10px] uppercase tracking-widest font-black" href="https://www.linkedin.com/company/112474074/admin/dashboard/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            </ul>
           </div>
         </div>
-      </div>
-    </footer>
-  )
+        <div className="max-w-[1440px] mx-auto px-12 py-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-white/20 text-[10px] uppercase tracking-[0.2em] text-center md:text-left">© 2024 Studio Anthos Alba. Nick GastroGuide Excellence.</p>
+          <p className="text-white/20 text-[10px] uppercase tracking-[0.2em] text-center md:text-right">Made in Italy for the world.</p>
+        </div>
+      </footer>
+    </>
+  );
 }

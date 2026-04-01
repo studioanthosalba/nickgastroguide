@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nick GastroGuide | AI Concierge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #131313;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed": "#1d1b1b",
+              "on-primary-fixed-variant": "#72351e",
+              "on-secondary": "#591d0a",
+              "on-primary-container": "#4d1905",
+              "on-tertiary-fixed-variant": "#494645",
+              "error-container": "#93000a",
+              "surface-container": "#201f1f",
+              "surface-container-lowest": "#0e0e0e",
+              "background": "#131313",
+              "surface": "#131313",
+              "inverse-on-surface": "#313030",
+              "primary-fixed": "#ffdbcf",
+              "tertiary": "#cbc5c4",
+              "tertiary-fixed-dim": "#cbc5c4",
+              "tertiary-fixed": "#e7e1e0",
+              "surface-container-highest": "#353534",
+              "error": "#ffb4ab",
+              "primary-fixed-dim": "#ffb59b",
+              "on-error": "#690005",
+              "on-primary-fixed": "#380d00",
+              "on-secondary-fixed": "#3b0900",
+              "surface-container-low": "#1c1b1b",
+              "secondary-fixed": "#ffdbd1",
+              "on-primary": "#55200a",
+              "secondary-container": "#76321e",
+              "inverse-primary": "#8f4c33",
+              "tertiary-container": "#94908f",
+              "on-secondary-fixed-variant": "#76321e",
+              "outline-variant": "#53433e",
+              "surface-container-high": "#2a2a2a",
+              "on-surface": "#e5e2e1",
+              "secondary": "#ffb5a0",
+              "surface-variant": "#353534",
+              "surface-tint": "#ffb59b",
+              "inverse-surface": "#e5e2e1",
+              "primary": "#ffb59b",
+              "outline": "#a18c86",
+              "surface-bright": "#3a3939",
+              "on-error-container": "#ffdad6",
+              "on-tertiary": "#32302f",
+              "on-secondary-container": "#fc9d81",
+              "secondary-fixed-dim": "#ffb5a0",
+              "surface-dim": "#131313",
+              "on-background": "#e5e2e1",
+              "on-surface-variant": "#d9c2ba",
+              "on-tertiary-container": "#2c2929",
+              "primary-container": "#cb7d60"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body text-on-surface overflow-x-hidden">
+<!-- Top AppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full shadow-[0_20px_40px_rgba(229,226,225,0.04)]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Nick the Sommelier" class="w-full h-full object-cover" data-alt="Close-up portrait of a sophisticated middle-aged man with silver hair wearing a bespoke dark charcoal suit in a moody wine cellar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA3augtRTPQhRt_jX4gzAvNWqLDp8B-pghi-USNQcfm-ccACycdw1eCiG5lX5pbcK1d-gi3ycXisI0vVMJn8Ar9cJOHUcVoUJ2ALOzEKSMO_el9egL5QbEWzRdgXKnXTexAzeqlo9q-GaDCDnK1lu8OALySHAHn087lsmvl_ISDFer94m8txOxlf5kQoZPAwhFZ94DnCs-rlO4Ts_8C6Z1kl4_RxuRIscP2hvjcpaBLQQ4abLEHfGBfrsSj7A2YbSKXV5H6ASegjgY"/>
+</div>
+<span class="text-xl font-headline italic text-primary tracking-tight">Nick GastroGuide</span>
+</div>
+<button class="text-primary hover:opacity-80 transition-opacity active:duration-150 scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</nav>
+<main class="pt-24 pb-48 px-4 max-w-2xl mx-auto space-y-8">
+<!-- Profile Header Block -->
+<header class="bg-surface-container-high rounded-lg p-6 flex items-start gap-4 shadow-lg">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Nick Profile" class="w-full h-full object-cover" data-alt="Portrait of a well-dressed professional sommelier in a dimly lit high-end restaurant setting with warm ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJCO2NgDzKtFrFwxn-82qjdAsLz8wQjH1vMM1fIzVSBcVqjOKpytr_hbF4c9uEZ499qYg1xDdBZC0dM3kbhy55XY4z8sND_8_jtMd14-YmevxPdSWGKKTfIPBZxn_DB2mcwjd5QTLjJyBh-q783AzI7yzlQPkDWkWdpbmFP_uUeUtdwHaGcOEXsFfPSdJLyzaCWTjCk8Vz69vKt4hJGkxb5k32bqzadWDvp5VrTtMIClYXgdGlTMh5XSCPdtsbMbNUyLkKc0vBUj40"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label font-medium uppercase tracking-widest text-[10px] text-primary mb-1">YOUR AI CONCIERGE</span>
+<h1 class="text-2xl font-headline italic leading-tight text-on-surface mb-2">Benvenuto sono Nick</h1>
+<p class="text-[11px] font-label uppercase tracking-widest text-tertiary-container">Curated by Nick, Michelin * 2024</p>
+</div>
+</header>
+<!-- Chat History -->
+<div class="space-y-6">
+<!-- AI Message 1 -->
+<div class="flex flex-col items-start gap-1">
+<span class="text-[9px] font-label uppercase tracking-widest text-tertiary-container ml-2">NICK • 7:02 PM</span>
+<div class="max-w-[85%] bg-gradient-to-br from-surface-container-highest to-surface-container-high rounded-xl rounded-tl-none p-4 text-sm leading-relaxed text-on-surface shadow-md">
+                    Good evening. I'm Nick, your digital sommelier and concierge. How may I elevate your experience tonight? I noticed you're interested in our vintage reserves or perhaps a local attraction after your meal?
+                </div>
+</div>
+<!-- User Message 1 -->
+<div class="flex flex-col items-end gap-1">
+<span class="text-[9px] font-label uppercase tracking-widest text-tertiary-container mr-2">YOU • 7:03 PM</span>
+<div class="max-w-[85%] bg-gradient-to-br from-primary to-primary-container rounded-xl rounded-tr-none p-4 text-sm leading-relaxed text-on-primary-container font-medium shadow-[0_4px_15px_rgba(203,125,96,0.3)]">
+                    I'd like to book a table for two tonight around 8:30 PM. Also, what do you recommend for a scenic walk nearby before dinner?
+                </div>
+</div>
+<!-- AI Message 2 with Card -->
+<div class="flex flex-col items-start gap-1">
+<span class="text-[9px] font-label uppercase tracking-widest text-tertiary-container ml-2">NICK • 7:04 PM</span>
+<div class="max-w-[85%] bg-gradient-to-br from-surface-container-highest to-surface-container-high rounded-xl rounded-tl-none p-4 text-sm leading-relaxed text-on-surface shadow-md space-y-4">
+<p>An excellent choice. I have a quiet corner table available at 8:30 PM. For your pre-dinner promenade, the Starlight Promenade is just two blocks away, offering a breathtaking view of the valley's evening lights.</p>
+<!-- Recommendation Card -->
+<div class="bg-surface-container rounded-lg p-3 border border-outline-variant/10 shadow-inner">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="location_on">location_on</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary font-label text-[8px] tracking-widest rounded-full border border-primary/20">LOCAL SECRET</span>
+</div>
+<div class="mb-3">
+<h3 class="font-headline italic text-on-surface text-base">Starlight Promenade</h3>
+<p class="text-[10px] text-tertiary-container uppercase tracking-tight">6-minute walk from here. Best at dusk.</p>
+</div>
+<a class="flex items-center gap-1 text-[11px] font-bold text-primary uppercase tracking-widest hover:opacity-80 transition-opacity" href="#">
+                            Open in Maps
+                            <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Typing Indicator -->
+<div class="flex items-center gap-3 pl-2">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style="animation-delay: 0s"></div>
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+</div>
+<span class="text-[9px] font-label uppercase tracking-widest text-tertiary-container">NICK IS CURATING...</span>
+</div>
+<!-- Feedback Card -->
+<div class="bg-surface-container-highest/40 backdrop-blur-md rounded-lg p-8 border border-outline-variant/5 text-center shadow-2xl relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<h2 class="text-2xl font-headline italic text-on-surface mb-3">Enjoyed your evening?</h2>
+<p class="text-sm text-tertiary-container mb-6 font-light italic">"Your praise is the finest vintage we could ever hope to receive."</p>
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-label font-bold tracking-widest text-xs py-4 rounded-full flex justify-center items-center gap-2 shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                    LEAVE A GOOGLE REVIEW
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Input & Navigation Section -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+<!-- Input Area -->
+<div class="px-4 py-4 bg-background/90 backdrop-blur-2xl">
+<!-- Quick Actions -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar mb-4 pb-1">
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container-high/60 border border-outline-variant/20 rounded-full text-[10px] font-label font-bold text-on-surface uppercase tracking-widest hover:bg-surface-container-highest transition-colors">NEI DINTORNI?</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container-high/60 border border-outline-variant/20 rounded-full text-[10px] font-label font-bold text-on-surface uppercase tracking-widest hover:bg-surface-container-highest transition-colors">COSA MI CONSIGLI?</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container-high/60 border border-outline-variant/20 rounded-full text-[10px] font-label font-bold text-on-surface uppercase tracking-widest hover:bg-surface-container-highest transition-colors">MENU</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container-high/60 border border-outline-variant/20 rounded-full text-[10px] font-label font-bold text-on-surface uppercase tracking-widest hover:bg-surface-container-highest transition-colors">CANTINA</button>
+</div>
+<!-- Main Input Field -->
+<div class="relative flex items-center gap-2">
+<div class="relative flex-grow">
+<div class="absolute left-4 top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="add">add</span>
+</div>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/10 rounded-full py-4 pl-12 pr-4 text-sm text-on-surface placeholder:text-tertiary-container focus:ring-1 focus:ring-primary/20 focus:outline-none focus:border-primary/30 transition-all" placeholder="Ask Nick anything..." type="text"/>
+</div>
+<button class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Bottom NavBar -->
+<div class="bg-[#1A1A1A]/90 backdrop-blur-2xl flex justify-around items-center px-8 py-4 rounded-t-[3rem] shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col items-center justify-center bg-gradient-to-br from-[#FFB59B] to-[#CB7D60] text-[#131313] rounded-full w-12 h-12 shadow-[0_0_15px_rgba(203,125,96,0.4)] active:duration-150">
+<span class="material-symbols-outlined text-xl" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-sans font-bold uppercase tracking-tighter text-[9px] mt-0.5 hidden">Concierge</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#94908F] opacity-60 hover:text-[#FFB5A0] transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="explore">explore</span>
+<span class="font-sans font-bold uppercase tracking-tighter text-[9px] mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#94908F] opacity-60 hover:text-[#FFB5A0] transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="event_available">event_available</span>
+<span class="font-sans font-bold uppercase tracking-tighter text-[9px] mt-1">Reservations</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#94908F] opacity-60 hover:text-[#FFB5A0] transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="wine_bar">wine_bar</span>
+<span class="font-sans font-bold uppercase tracking-tighter text-[9px] mt-1">Cellar</span>
+</div>
+</div>
+</div>
+</body></html>

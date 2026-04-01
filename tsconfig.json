@@ -33,6 +33,12 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "admin-manage-user.ts",
+    "verify-reset-code.ts",
+    "send-reset-code.ts",
+    "send-reset.js",
+    "test-gemini.js",
+    "test-groq.js"
   ]
 }

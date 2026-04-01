@@ -1,14 +1,6 @@
 import { createClient } from "@insforge/sdk";
 
 export const insforge = createClient({
-  projectId: process.env.NEXT_PUBLIC_INSFORGE_PROJECT_ID!,
-  apiKey: process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY!,
+  baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL!,
+  anonKey: process.env.NEXT_PUBLIC_INSFORGE_KEY!,
 });
-
-export const createAuthenticatedClient = (token: string) => {
-  return createClient({
-    projectId: process.env.NEXT_PUBLIC_INSFORGE_PROJECT_ID!,
-    apiKey: process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY!,
-    token,
-  });
-};
