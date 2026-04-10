@@ -271,7 +271,13 @@ export default function SecretAdminPage() {
           }
         });
 
-        if (response.error) throw new Error(response.error.message);
+        console.log('Switch response:', JSON.stringify(response));
+
+        // Handle various error formats from InsForge
+        if (response.error) {
+          const errMsg = typeof response.error === 'string' ? response.error : response.error.message || JSON.stringify(response.error);
+          throw new Error(errMsg);
+        }
         if (response.data?.error) throw new Error(response.data.error);
         
         // 3. Sign out current admin session
@@ -290,7 +296,8 @@ export default function SecretAdminPage() {
         window.location.href = targetPath;
 
       } catch (err: any) {
-        alert("Errore switch: " + err.message);
+        console.error('Switch error details:', err);
+        alert("Errore switch: " + (err?.message || err?.toString() || 'Errore sconosciuto'));
         // If we got signed out but login failed, redirect to admin login
         const { data } = await insforge.auth.getCurrentUser();
         if (!data?.user) {
