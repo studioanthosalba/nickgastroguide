@@ -57,6 +57,7 @@ export default function DashboardPage() {
   const [primaryColor, setPrimaryColor] = useState('#ffb59e');
   const [location, setLocation] = useState('');
   const [googleReviewLink, setGoogleReviewLink] = useState('');
+  const [reviewClickCount, setReviewClickCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error' | 'saving'>('idle');
   
   // Location Autocomplete State
@@ -122,6 +123,13 @@ export default function DashboardPage() {
         setMenuText(rData.menu_text || ''); 
         if (rData.persuasion_text) setPersuasionText(rData.persuasion_text);
         if (rData.menu_json) setMenuJson(rData.menu_json);
+
+        // Fetch review click count
+        const { count } = await insforge.database
+          .from('review_clicks')
+          .select('*', { count: 'exact', head: true })
+          .eq('restaurant_id', rData.id);
+        setReviewClickCount(count || 0);
       }
     };
     initDashboard();
@@ -324,7 +332,7 @@ export default function DashboardPage() {
         {/* Overview Stats */}
         <div className="grid grid-cols-1 gap-6 mb-12">
           <div className="w-full max-w-md">
-            <StatsCard title="Click Link Recensioni" value="0" icon={<Star className="w-6 h-6 text-amber-500" />} trend="+12%" />
+            <StatsCard title="Click Link Recensioni" value={reviewClickCount.toString()} icon={<Star className="w-6 h-6 text-amber-500" />} trend={reviewClickCount > 0 ? `${reviewClickCount} totali` : undefined} />
           </div>
         </div>
 

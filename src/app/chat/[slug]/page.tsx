@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Send, Utensils, MapPin, ChevronDown, ChevronUp,
-  Sparkles, Bot, Loader2, Clock, Star
+  Sparkles, Bot, Loader2, Clock, Star, ThumbsUp
 } from 'lucide-react';
 import { insforge } from '@/lib/insforge';
 
@@ -56,6 +56,7 @@ export default function ChatPage({ params }: { params: { slug: string } }) {
   const [isLoadingRestaurant, setIsLoadingRestaurant] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [reviewClicked, setReviewClicked] = useState(false);
 
   const accentColor = restaurant?.primary_color || '#f59e0b';
 
@@ -288,6 +289,44 @@ Se ti chiedono di attrazioni turistiche, usa la posizione del ristorante per dar
           </AnimatePresence>
           <div ref={messagesEndRef} className="h-4" />
         </div>
+
+        {/* Google Review Button — visible after 3+ messages */}
+        {restaurant?.google_review_link && messages.length >= 3 && !reviewClicked && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto max-w-md"
+          >
+            <div className="bg-gradient-to-r from-amber-500/10 to-primary/10 border border-amber-500/20 rounded-2xl p-5 text-center">
+              <Star className="w-8 h-8 text-amber-400 mx-auto mb-2" />
+              <p className="text-sm font-medium text-on-surface mb-1">Ti è piaciuta l'esperienza?</p>
+              <p className="text-[11px] text-tertiary-container mb-4">Lascia una recensione su Google, per noi conta tanto! ⭐</p>
+              <a
+                href={restaurant.google_review_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={async () => {
+                  setReviewClicked(true);
+                  try {
+                    await fetch('/api/track-review-click', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ slug: params.slug }),
+                    });
+                  } catch (e) { /* fire and forget */ }
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm rounded-xl hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/30 active:scale-95"
+              >
+                <ThumbsUp className="w-4 h-4" /> Lascia una Recensione
+              </a>
+            </div>
+          </motion.div>
+        )}
+        {reviewClicked && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mx-auto text-center">
+            <p className="text-emerald-400 text-sm font-medium">Grazie mille per la tua recensione! 💚</p>
+          </motion.div>
+        )}
 
         {/* Menu Panel */}
         <AnimatePresence>
