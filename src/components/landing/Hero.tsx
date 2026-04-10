@@ -123,25 +123,24 @@ export default function Hero() {
                 </div>
 
                 <div className="w-full max-w-[500px] mx-auto mb-16 relative">
-                  <div className="glass-panel rounded-[2rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20">
+                  <div className="rounded-2xl md:rounded-[3.5rem] p-1 sm:p-2 md:p-4 border border-primary/20 bg-black/50 md:glass-panel md:shadow-[0_0_80px_rgba(255,181,158,0.1)]">
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
-                      <div className="bg-primary/20 backdrop-blur-md px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
+                      <div className="bg-primary/20 px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
                         <span className="font-label text-xs font-bold text-primary tracking-widest uppercase">Live Experience</span>
                       </div>
                     </div>
-                    <div className="bg-surface-container-lowest h-full w-full rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden border border-white/5 shadow-inner">
+                    <div className="rounded-xl md:rounded-[3rem] overflow-hidden border border-white/5">
                       {/* Native HTML5 Video - works perfectly on mobile */}
                       <video
                         ref={videoRef}
-                        className="w-full h-full object-cover"
+                        className="w-full block"
                         style={{ aspectRatio: '9/16' }}
                         autoPlay
                         muted
                         loop
                         playsInline
-                        preload="auto"
-                        poster=""
+                        preload="metadata"
                       >
                         <source src="/nick-demo.mp4" type="video/mp4" />
                       </video>
