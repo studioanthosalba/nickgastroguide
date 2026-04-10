@@ -18,7 +18,7 @@
     "html-to-image": "^1.11.13",
     "lucide-react": "latest",
     "next": "14.2.14",
-    "nodemailer": "^8.0.4",
+    "nodemailer": "^8.0.5",
     "openai": "^6.33.0",
     "qrcode.react": "^4.2.0",
     "react": "latest",
