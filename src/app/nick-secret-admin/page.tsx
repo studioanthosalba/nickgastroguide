@@ -23,7 +23,12 @@ import {
   Eye,
   X,
   Link as LinkIcon,
-  Copy
+  Copy,
+  Wallet,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Ban
 } from 'lucide-react';
 import { insforge } from '@/lib/insforge';
 import { ADMIN_EMAILS } from '@/lib/constants';
@@ -34,7 +39,9 @@ export default function SecretAdminPage() {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState<any[]>([]);
+  const [pendingPayouts, setPendingPayouts] = useState<any[]>([]);
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [adminTab, setAdminTab] = useState<'users' | 'payouts'>('users');
   
   // New User Form State
   const [newUser, setNewUser] = useState({
@@ -66,6 +73,7 @@ export default function SecretAdminPage() {
         if (ADMIN_EMAILS.includes(user.email?.toLowerCase() || '')) {
           setIsAuthorized(true);
           fetchUsers();
+          fetchPendingPayouts();
         } else {
           setIsAuthorized(false);
         }
@@ -90,6 +98,75 @@ export default function SecretAdminPage() {
     }
   };
 
+  const fetchPendingPayouts = async () => {
+    try {
+      const { data, error } = await insforge.database
+        .from('payouts')
+        .select('*')
+        .in('status', ['requested', 'processing'])
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      
+      // Enrich with agent info
+      if (data && data.length > 0) {
+        const enriched = [];
+        for (const p of data) {
+          const { data: prof } = await insforge.database
+            .from('profiles')
+            .select('full_name, paypal_email, iban, bank_holder')
+            .eq('id', p.agent_id)
+            .single();
+          
+          // Get agent email from users list or fetch it
+          const userMatch = users.find(u => u.id === p.agent_id);
+          
+          enriched.push({
+            ...p,
+            agent_name: prof?.full_name || 'N/A',
+            agent_email: userMatch?.email || 'N/A',
+            paypal_email: prof?.paypal_email,
+            iban: prof?.iban,
+            bank_holder: prof?.bank_holder,
+          });
+        }
+        setPendingPayouts(enriched);
+      } else {
+        setPendingPayouts([]);
+      }
+    } catch (err) {
+      console.error('Error fetching payouts:', err);
+    }
+  };
+
+  const handlePayoutAction = async (payoutId: string, action: 'completed' | 'rejected') => {
+    const label = action === 'completed' ? 'COMPLETATO' : 'RIFIUTATO';
+    if (!confirm(`Segnare questo payout come ${label}?`)) return;
+    try {
+      const { error } = await insforge.database
+        .from('payouts')
+        .update({ status: action })
+        .eq('id', payoutId);
+      if (error) throw error;
+
+      // If completed, also mark relevant commissions as paid
+      if (action === 'completed') {
+        const payout = pendingPayouts.find(p => p.id === payoutId);
+        if (payout) {
+          await insforge.database
+            .from('commissions')
+            .update({ status: 'paid' })
+            .eq('agent_id', payout.agent_id)
+            .eq('status', 'pending');
+        }
+      }
+
+      setMessage({ type: 'success', text: `Payout ${label} con successo.` });
+      fetchPendingPayouts();
+    } catch (err: any) {
+      setMessage({ type: 'error', text: 'Errore: ' + err.message });
+    }
+  };
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
@@ -107,6 +184,7 @@ export default function SecretAdminPage() {
       if (ADMIN_EMAILS.includes(user.email?.toLowerCase() || '')) {
          setIsAuthorized(true);
          fetchUsers();
+         fetchPendingPayouts();
       } else {
          setIsAuthorized(false);
       }
@@ -555,9 +633,36 @@ export default function SecretAdminPage() {
                <button onClick={handleLogout} className="p-2.5 bg-red-500/10 hover:bg-red-500 rounded-xl text-red-500 hover:text-white transition-all"><LogOut className="w-4 h-4" /></button>
             </div>
          </div>
+         {/* Admin Tabs */}
+         <div className="container mx-auto flex gap-2 mt-4">
+            <button 
+              onClick={() => setAdminTab('users')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                adminTab === 'users' ? 'bg-primary text-black' : 'bg-zinc-800 text-zinc-500 hover:text-white'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" /> Utenti
+            </button>
+            <button 
+              onClick={() => { setAdminTab('payouts'); fetchPendingPayouts(); }}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all relative ${
+                adminTab === 'payouts' ? 'bg-primary text-black' : 'bg-zinc-800 text-zinc-500 hover:text-white'
+              }`}
+            >
+              <Wallet className="w-3.5 h-3.5" /> Payouts
+              {pendingPayouts.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center animate-pulse">
+                  {pendingPayouts.length}
+                </span>
+              )}
+            </button>
+         </div>
       </div>
 
       <main className="container mx-auto p-6 md:p-10">
+
+        {adminTab === 'users' ? (
+         <>
          <div className="grid lg:grid-cols-12 gap-10">
             {/* Form */}
             <div className="lg:col-span-4">
@@ -785,6 +890,118 @@ export default function SecretAdminPage() {
               </div>
            </div>
          )}
+         </>
+        ) : (
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <Wallet className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black tracking-tighter italic">Richieste Payout</h2>
+                <p className="text-zinc-500 text-xs mt-1">Gestisci le richieste di pagamento degli agenti</p>
+              </div>
+            </div>
+
+            {message && (
+              <div className={`p-4 rounded-2xl mb-6 text-xs font-bold flex items-center gap-3 ${message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                {message.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                {message.text}
+              </div>
+            )}
+
+            {pendingPayouts.length > 0 ? (
+              <div className="space-y-4">
+                {pendingPayouts.map((payout) => (
+                  <div key={payout.id} className="bg-zinc-900 border border-white/5 rounded-[32px] p-8 hover:border-white/10 transition-all">
+                    <div className="flex flex-col lg:flex-row justify-between gap-6">
+                      <div className="flex-grow">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center">
+                            <Zap className="w-5 h-5 text-amber-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-black text-white">{payout.agent_name}</p>
+                            <p className="text-[10px] text-zinc-500">{payout.agent_email}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="bg-black/40 border border-white/5 rounded-xl p-3">
+                            <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">Importo</p>
+                            <p className="text-lg font-black text-white">€{parseFloat(payout.amount).toFixed(2)}</p>
+                          </div>
+                          <div className="bg-black/40 border border-white/5 rounded-xl p-3">
+                            <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">Metodo</p>
+                            <p className="text-xs font-black flex items-center gap-1.5">
+                              {payout.method === 'bank_transfer' ? (
+                                <><CreditCard className="w-3 h-3 text-blue-400" /> <span className="text-blue-400">Bonifico</span></>
+                              ) : (
+                                <><DollarSign className="w-3 h-3 text-amber-400" /> <span className="text-amber-400">PayPal</span></>
+                              )}
+                            </p>
+                          </div>
+                          <div className="bg-black/40 border border-white/5 rounded-xl p-3">
+                            <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">Stato</p>
+                            <p className={`text-xs font-black flex items-center gap-1.5 ${payout.status === 'requested' ? 'text-amber-400' : 'text-blue-400'}`}>
+                              <Clock className="w-3 h-3" /> {payout.status === 'requested' ? 'In Attesa' : 'In Lavorazione'}
+                            </p>
+                          </div>
+                          <div className="bg-black/40 border border-white/5 rounded-xl p-3">
+                            <p className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1">Data</p>
+                            <p className="text-xs font-bold text-zinc-300">
+                              {new Date(payout.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </p>
+                          </div>
+                        </div>
+                        {payout.method === 'bank_transfer' && payout.iban && (
+                          <div className="mt-4 bg-blue-500/5 border border-blue-500/10 rounded-xl p-4">
+                            <p className="text-[9px] text-blue-400 uppercase font-black tracking-widest mb-2">Dati Bancari</p>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <p className="text-[10px] text-zinc-500">IBAN</p>
+                                <p className="text-xs font-bold text-white font-mono">{payout.iban}</p>
+                              </div>
+                              <div>
+                                <p className="text-[10px] text-zinc-500">Intestatario</p>
+                                <p className="text-xs font-bold text-white">{payout.bank_holder || 'N/A'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {payout.method === 'paypal' && payout.paypal_email && (
+                          <div className="mt-4 bg-amber-500/5 border border-amber-500/10 rounded-xl p-4">
+                            <p className="text-[9px] text-amber-400 uppercase font-black tracking-widest mb-2">PayPal</p>
+                            <p className="text-xs font-bold text-white">{payout.paypal_email}</p>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex lg:flex-col gap-3 shrink-0">
+                        <button
+                          onClick={() => handlePayoutAction(payout.id, 'completed')}
+                          className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 text-black font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
+                        >
+                          <CheckCircle2 className="w-4 h-4" /> Approva
+                        </button>
+                        <button
+                          onClick={() => handlePayoutAction(payout.id, 'rejected')}
+                          className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-zinc-800 text-red-400 border border-red-500/20 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-red-500/10 transition-all"
+                        >
+                          <Ban className="w-4 h-4" /> Rifiuta
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-zinc-900 border border-white/5 rounded-[40px] p-16 text-center">
+                <CheckCircle2 className="w-16 h-16 text-emerald-500/30 mx-auto mb-4" />
+                <h3 className="text-lg font-black text-zinc-400 mb-2">Nessuna richiesta pendente</h3>
+                <p className="text-xs text-zinc-600">Tutte le richieste sono state elaborate.</p>
+              </div>
+            )}
+          </div>
+        )}
 
       </main>
 

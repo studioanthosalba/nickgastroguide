@@ -284,6 +284,7 @@ export default function DashboardPage() {
             <button 
               className="p-3 bg-zinc-900 border border-white/5 rounded-2xl hover:bg-red-500/10 hover:text-red-500 transition-all group"
               title="Esci"
+              onClick={async () => { await insforge.auth.signOut(); window.location.href = '/login'; }}
             >
               <LogOut className="w-5 h-5 text-zinc-400 group-hover:text-red-500" />
             </button>
