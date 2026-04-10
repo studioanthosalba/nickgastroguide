@@ -130,17 +130,20 @@ export default function Hero() {
                         <span className="font-label text-xs font-bold text-primary tracking-widest uppercase">Live Experience</span>
                       </div>
                     </div>
-                    <div className="rounded-xl md:rounded-[3rem] overflow-hidden border border-white/5">
-                      {/* Native HTML5 Video - works perfectly on mobile */}
+                    <div className="rounded-xl md:rounded-[3rem] overflow-hidden border border-white/5 relative bg-black">
+                      {/* Scudo invisibile per bloccare i tap diretti al video su mobile */}
+                      <div className="absolute inset-0 z-10" style={{ touchAction: 'pan-y' }}></div>
+                      
+                      {/* Native HTML5 Video */}
                       <video
                         ref={videoRef}
-                        className="w-full block"
+                        className="w-full block pointer-events-none"
                         style={{ aspectRatio: '9/16' }}
                         autoPlay
                         muted
                         loop
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                       >
                         <source src="/nick-demo.mp4" type="video/mp4" />
                       </video>
