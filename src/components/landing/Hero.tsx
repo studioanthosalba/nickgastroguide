@@ -1,26 +1,82 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useRef } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
 export default function Hero() {
   const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showPoster, setShowPoster] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const userPausedRef = useRef(false);
 
-  const toggleAudio = () => {
-    if (!videoRef.current) return;
-    
-    if (isMuted) {
-      videoRef.current.muted = false;
-      videoRef.current.volume = 1;
-      // Force play in case mobile paused it
-      videoRef.current.play().catch(() => {});
+  // Watchdog: monitors video state and auto-resumes if paused unexpectedly
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => {
+      setIsPlaying(false);
+      // If user didn't explicitly pause, force resume after a brief delay
+      if (!userPausedRef.current) {
+        setTimeout(() => {
+          if (video.paused && !userPausedRef.current) {
+            video.play().catch(() => {});
+          }
+        }, 100);
+      }
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+    };
+  }, []);
+
+  const handlePlayPause = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (showPoster) {
+      // First play — hide poster, start video
+      setShowPoster(false);
+      userPausedRef.current = false;
+      video.play().catch(() => {});
+      return;
+    }
+
+    if (video.paused) {
+      userPausedRef.current = false;
+      video.play().catch(() => {});
     } else {
-      videoRef.current.muted = true;
+      userPausedRef.current = true;
+      video.pause();
+    }
+  }, [showPoster]);
+
+  const toggleAudio = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isMuted) {
+      video.muted = false;
+      video.volume = 1;
+      // If still showing poster, also start playback
+      if (showPoster) {
+        setShowPoster(false);
+        userPausedRef.current = false;
+        video.play().catch(() => {});
+      }
+    } else {
+      video.muted = true;
     }
     setIsMuted(!isMuted);
-  };
+  }, [isMuted, showPoster]);
 
   return (
     <>
@@ -122,7 +178,7 @@ export default function Hero() {
                   <p className="text-xl text-on-surface italic mb-10">&quot;Nick non sostituisce l&apos;umano, gli regala superpoteri.&quot;</p>
                 </div>
 
-                <div className="w-full max-w-[500px] mx-auto mb-16 relative">
+                <div className="w-full max-w-[500px] mx-auto mb-8 relative">
                   <div className="rounded-2xl md:rounded-[3.5rem] p-1 sm:p-2 md:p-4 border border-primary/20 bg-black/50 md:glass-panel md:shadow-[0_0_80px_rgba(255,181,158,0.1)]">
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
                       <div className="bg-primary/20 px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
@@ -131,53 +187,63 @@ export default function Hero() {
                       </div>
                     </div>
                     <div className="rounded-xl md:rounded-[3rem] overflow-hidden border border-white/5 relative bg-black">
-                      {/* Scudo invisibile per bloccare i tap diretti al video su mobile */}
-                      <div className="absolute inset-0 z-10" style={{ touchAction: 'pan-y' }}></div>
                       
+                      {/* Poster overlay — shown until user presses Play */}
+                      {showPoster && (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60">
+                          <button
+                            onClick={handlePlayPause}
+                            className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/40 active:scale-90 transition-transform"
+                          >
+                            <Play className="w-8 h-8 text-black ml-1" />
+                          </button>
+                        </div>
+                      )}
+
                       {/* Native HTML5 Video */}
                       <video
                         ref={videoRef}
-                        className="w-full block pointer-events-none"
-                        style={{ aspectRatio: '9/16', transform: 'translateZ(0)', willChange: 'transform' }}
-                        autoPlay
+                        className="w-full block"
+                        style={{ aspectRatio: '9/16', transform: 'translateZ(0)' }}
                         muted
                         loop
                         playsInline
                         preload="auto"
+                        poster=""
                       >
                         <source src="/nick-demo.mp4" type="video/mp4" />
                       </video>
                     </div>
-                    
-                    {/* Floating Audio Controls */}
+                  </div>
+                  
+                  {/* Controls bar under the video */}
+                  <div className="mt-6 flex items-center justify-center gap-3">
+                    <button 
+                      onClick={handlePlayPause}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-highest border border-white/10 text-xs font-bold uppercase tracking-widest active:scale-95 transition-all"
+                    >
+                      {isPlaying ? (
+                        <><Pause className="w-4 h-4 text-primary" /> Pausa</>
+                      ) : (
+                        <><Play className="w-4 h-4 text-primary ml-0.5" /> Play</>
+                      )}
+                    </button>
                     <button 
                       onClick={toggleAudio}
-                      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-primary hover:text-black active:scale-95 transition-all shadow-xl group"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-highest border border-white/10 text-xs font-bold uppercase tracking-widest active:scale-95 transition-all"
                     >
                       {isMuted ? (
-                        <VolumeX className="w-5 h-5 text-white group-hover:text-black transition-colors" />
+                        <><VolumeX className="w-4 h-4 text-on-surface-variant" /> Audio Off</>
                       ) : (
-                        <div className="relative">
-                           <Volume2 className="w-5 h-5 text-white group-hover:text-black transition-colors" />
-                           <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
-                             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
-                           </span>
-                        </div>
+                        <><Volume2 className="w-4 h-4 text-primary" /> Audio On</>
                       )}
                     </button>
                   </div>
-                  
-                  {/* Premium Integrated Text Below Video */}
-                  <div className="mt-8 flex flex-col items-center justify-center text-center">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface-container-high border border-white/5 mb-4 shadow-sm">
-                       <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: '"FILL" 1' }}>play_circle</span>
-                       <span className="font-label text-xs text-on-surface-variant uppercase tracking-widest font-bold">Guarda l'esperienza reale</span>
-                    </div>
-                    <p className="text-sm sm:text-base text-on-surface-variant max-w-[280px] sm:max-w-sm italic opacity-80 leading-relaxed">
-                      Ascolta come Nick aumenta lo scontrino medio interagendo con i tuoi clienti in sala.
-                    </p>
-                  </div>
+
+                  {/* Subtitle */}
+                  <p className="mt-4 text-center text-sm text-on-surface-variant italic opacity-70 leading-relaxed max-w-xs mx-auto">
+                    Scopri come Nick interagisce con i clienti in sala
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-16 w-full mt-32 border-t border-outline-variant/10 pt-16">
