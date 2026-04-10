@@ -49,7 +49,7 @@ export default function Navbar() {
               <Link href="/login" className="text-white/70 hover:text-white font-label text-xs font-black uppercase tracking-widest transition-all">
                 Sign In
               </Link>
-              <Link href="/login" className="hidden sm:inline-block px-7 py-3 bg-primary text-black font-label text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20">
+              <Link href="/affiliation" className="hidden sm:inline-block px-7 py-3 bg-primary text-black font-label text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20">
                 lavora con noi
               </Link>
             </>

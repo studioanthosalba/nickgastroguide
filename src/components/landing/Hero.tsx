@@ -19,11 +19,8 @@ export default function Hero() {
       '*'
     );
     
-    // Also ensuring it's playing
-    iframeRef.current.contentWindow?.postMessage(
-      JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
-      '*'
-    );
+    // We remove the playVideo call because it's already autoplaying/looping.
+    // Redundant calls can cause "freezes" on some mobile browsers when unmuting.
     
     setIsMuted(!isMuted);
   };
@@ -38,7 +35,7 @@ export default function Hero() {
         <div className="editorial-grid items-center">
           <div className="col-span-12 md:col-span-7">
             <span className="inline-block px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold tracking-[0.2em] uppercase mb-8">
-              Studio Antos Alba
+              Studio Anthos Alba
             </span>
             <h1 className="font-headline text-5xl md:text-7xl leading-[1.1] text-on-surface mb-8">
               Il concierge AI che <span className="italic text-primary font-light">vende</span> i tuoi piatti e il tuo territorio, 24/7.
@@ -129,7 +126,7 @@ export default function Hero() {
                 </div>
 
                 <div className="w-full max-w-[500px] mx-auto mb-16 relative">
-                  <div className="glass-panel rounded-[3.5rem] p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20">
+                  <div className="glass-panel rounded-[3.5rem] p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20 transform-gpu" style={{ transform: 'translate3d(0,0,0)', willChange: 'transform' }}>
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
                       <div className="bg-primary/20 backdrop-blur-md px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>

@@ -87,8 +87,23 @@ export default function DashboardPage() {
       
       if (!data?.user) return;
 
-      if (data.user.email && ADMIN_EMAILS.includes(data.user.email.toLowerCase())) {
+      const userIsAdmin = data.user.email && ADMIN_EMAILS.includes(data.user.email.toLowerCase());
+      if (userIsAdmin) {
         setIsAdmin(true);
+      }
+
+      // Guard: if user is an agent (and not admin), redirect to agent dashboard
+      if (!userIsAdmin) {
+        const { data: userRow } = await insforge.database
+          .from('users')
+          .select('is_agent')
+          .eq('id', data.user.id)
+          .single();
+        
+        if (userRow?.is_agent) {
+          window.location.href = '/agent-dashboard';
+          return;
+        }
       }
 
       const { data: rData, error: rError } = await insforge.database

@@ -46,12 +46,17 @@ export default function RegisterAgentPage() {
         const refCode = Math.random().toString(36).substring(2, 10).toUpperCase();
         
         // Update profile with agent role, name, and referral code
-        await insforge.database.from('profiles').update({ 
+        await insforge.database.from('profiles').upsert({ 
+          id: user.id,
           role: 'agent',
+          is_agent: true,
           username: email.split('@')[0],
           full_name: fullName,
           referral_code: refCode
-        }).eq('id', user.id);
+        });
+
+        // Sync is_agent flag in users table via secure RPC
+        try { await insforge.database.rpc('set_user_as_agent'); } catch (_) {}
       }
 
       setSuccess(true);

@@ -36,31 +36,40 @@ function LoginContent() {
 
       if (data?.accessToken) {
         const normalizedEmail = email.toLowerCase().trim();
-        console.log("Login successful. Checking admin status for:", normalizedEmail);
-        console.log("ADMIN_EMAILS list:", ADMIN_EMAILS);
 
-        // Check if admin
+        // Admins can access any area
         if (ADMIN_EMAILS.includes(normalizedEmail)) {
-          console.log("User is ADMIN. loginAs is:", loginAs);
           if (loginAs === 'agent') {
-            console.log("Redirecting to /agent-dashboard");
             window.location.href = '/agent-dashboard';
           } else if (loginAs === 'ristoratore') {
-            console.log("Redirecting to /dashboard");
             window.location.href = '/dashboard';
           } else {
-            console.log("Redirecting to /admin (default)");
-            window.location.href = '/admin';
+            window.location.href = '/nick-secret-admin';
           }
           return;
         }
 
-        console.log("User is NOT admin according to the list. loginAs is:", loginAs);
-        if (loginAs === 'agent') {
-          window.location.href = '/agent-dashboard';
-        } else {
-          window.location.href = '/dashboard';
+        // Fetch the user's actual role to validate access
+        const { data: userRow } = await insforge.database
+          .from('users')
+          .select('is_agent')
+          .eq('email', normalizedEmail)
+          .single();
+
+        const isAgent = userRow?.is_agent ?? false;
+
+        if (loginAs === 'agent' && !isAgent) {
+          await insforge.auth.signOut();
+          throw new Error('Questo account è registrato come ristoratore. Accedi dall\'area ristoratori.');
         }
+
+        if (loginAs === 'ristoratore' && isAgent) {
+          await insforge.auth.signOut();
+          throw new Error('Questo account è registrato come agente. Accedi dall\'area agenti.');
+        }
+
+        // Route to the correct dashboard
+        window.location.href = isAgent ? '/agent-dashboard' : '/dashboard';
       }
     } catch (err: any) {
       console.error("Login component error:", err);

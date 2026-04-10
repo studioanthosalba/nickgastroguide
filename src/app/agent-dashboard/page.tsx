@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { insforge } from '@/lib/insforge';
+import { ADMIN_EMAILS } from '@/lib/constants';
 
 // ─── STAT CARD ────────────────────────────────────────────────────
 const EliteStatCard = ({ title, value, icon, sub, trend }: any) => (
@@ -91,28 +92,25 @@ export default function AgentDashboardPage() {
       
       setCurrentUser(user);
 
-      // 2. Fetch Profile
+      // 2. Fetch Profile — strict agent/admin check
       try {
-        const { data: pData, error: pError } = await insforge.database
+        const { data: pData } = await insforge.database
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
-          
-        if (pError) throw pError;
-        
-        if (pData) {
-          if (pData.role !== 'agent' && pData.role !== 'admin') {
-            router.push('/dashboard');
-            return;
-          }
+
+        const isAdmin = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '');
+
+        if (pData && (pData.is_agent || isAdmin)) {
           setProfile(pData);
         } else {
-          router.push('/login?as=agent');
+          // Not an agent — redirect away
+          router.push('/dashboard');
           return;
         }
       } catch (err) {
-        console.error("Failed to parse profile data:", err);
+        console.error("Failed to load agent profile:", err);
         router.push('/login?as=agent');
         return;
       }
