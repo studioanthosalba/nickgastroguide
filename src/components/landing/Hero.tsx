@@ -11,32 +11,46 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const userPausedRef = useRef(false);
 
-  // Watchdog: monitors video state and auto-resumes if paused unexpectedly
+  // Aggressive watchdog: uses requestAnimationFrame to detect and instantly
+  // resume video if the browser pauses it during touch/scroll events.
+  // Recovery is sub-16ms, making the pause imperceptible.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    let rafId: number;
+    let active = true;
+
     const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => {
-      setIsPlaying(false);
-      // If user didn't explicitly pause, force resume after a brief delay
-      if (!userPausedRef.current) {
-        setTimeout(() => {
-          if (video.paused && !userPausedRef.current) {
-            video.play().catch(() => {});
-          }
-        }, 100);
+    const handlePause = () => setIsPlaying(false);
+
+    // RAF loop — runs every frame, checks if video was paused unexpectedly
+    const watchdog = () => {
+      if (!active) return;
+      if (video.paused && !userPausedRef.current && !showPoster) {
+        video.play().catch(() => {});
       }
+      rafId = requestAnimationFrame(watchdog);
     };
 
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
 
+    // Start watchdog only after first play
+    const startWatchdog = () => {
+      rafId = requestAnimationFrame(watchdog);
+      video.removeEventListener('play', startWatchdog);
+    };
+    video.addEventListener('play', startWatchdog);
+
     return () => {
+      active = false;
+      cancelAnimationFrame(rafId);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
+      video.removeEventListener('play', startWatchdog);
     };
-  }, []);
+  }, [showPoster]);
 
   const handlePlayPause = useCallback(() => {
     const video = videoRef.current;
@@ -186,11 +200,11 @@ export default function Hero() {
                         <span className="font-label text-xs font-bold text-primary tracking-widest uppercase">Live Experience</span>
                       </div>
                     </div>
-                    <div className="rounded-xl md:rounded-[3rem] overflow-hidden border border-white/5 relative bg-black">
+                    <div className="relative bg-black rounded-xl md:rounded-[3rem]" style={{ contain: 'layout paint' }}>
                       
                       {/* Poster overlay — shown until user presses Play */}
                       {showPoster && (
-                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60">
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 rounded-xl md:rounded-[3rem]">
                           <button
                             onClick={handlePlayPause}
                             className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/40 active:scale-90 transition-transform"
@@ -203,13 +217,12 @@ export default function Hero() {
                       {/* Native HTML5 Video */}
                       <video
                         ref={videoRef}
-                        className="w-full block"
+                        className="w-full block rounded-xl md:rounded-[3rem]"
                         style={{ aspectRatio: '9/16', transform: 'translateZ(0)' }}
                         muted
                         loop
                         playsInline
                         preload="auto"
-                        poster=""
                       >
                         <source src="/nick-demo.mp4" type="video/mp4" />
                       </video>
