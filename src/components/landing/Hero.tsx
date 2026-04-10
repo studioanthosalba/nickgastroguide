@@ -193,18 +193,18 @@ export default function Hero() {
                 </div>
 
                 <div className="w-full max-w-[500px] mx-auto mb-8 relative">
-                  <div className="rounded-2xl md:rounded-[3.5rem] p-1 sm:p-2 md:p-4 border border-primary/20 bg-black/50 md:glass-panel md:shadow-[0_0_80px_rgba(255,181,158,0.1)]">
+                  <div className="md:rounded-[3.5rem] p-0 md:p-4 border border-primary/20 bg-black md:bg-black/50 md:glass-panel md:shadow-[0_0_80px_rgba(255,181,158,0.1)]">
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
                       <div className="bg-primary/20 px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
                         <span className="font-label text-xs font-bold text-primary tracking-widest uppercase">Live Experience</span>
                       </div>
                     </div>
-                    <div className="relative bg-black rounded-xl md:rounded-[3rem]" style={{ contain: 'layout paint' }}>
+                    <div className="relative bg-black md:rounded-[3rem]">
                       
                       {/* Poster overlay — shown until user presses Play */}
                       {showPoster && (
-                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 rounded-xl md:rounded-[3rem]">
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 md:rounded-[3rem]">
                           <button
                             onClick={handlePlayPause}
                             className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/40 active:scale-90 transition-transform"
@@ -217,8 +217,8 @@ export default function Hero() {
                       {/* Native HTML5 Video */}
                       <video
                         ref={videoRef}
-                        className="w-full block rounded-xl md:rounded-[3rem]"
-                        style={{ aspectRatio: '9/16', transform: 'translateZ(0)' }}
+                        className="w-full block md:rounded-[3rem]"
+                        style={{ aspectRatio: '9/16' }}
                         muted
                         loop
                         playsInline
