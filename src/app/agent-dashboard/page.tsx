@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Users, 
   Wallet, 
@@ -22,8 +22,26 @@ import {
   ExternalLink,
   Calendar,
   Store,
-  Mail
+  Mail,
+  Link2,
+  Hash,
+  Tag,
+  Camera,
+  Share2,
+  MessageCircle,
+  FileText,
+  Globe,
+  Plus
 } from 'lucide-react';
+
+const SOURCE_TAGS = [
+  { id: 'instagram', label: 'Instagram', icon: <Camera className="w-4 h-4" />, color: 'text-pink-400 bg-pink-400/10 border-pink-400/20' },
+  { id: 'facebook', label: 'Facebook', icon: <Share2 className="w-4 h-4" />, color: 'text-blue-400 bg-blue-400/10 border-blue-400/20' },
+  { id: 'whatsapp', label: 'WhatsApp', icon: <MessageCircle className="w-4 h-4" />, color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
+  { id: 'volantino', label: 'Volantino', icon: <FileText className="w-4 h-4" />, color: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
+  { id: 'email', label: 'Email', icon: <Mail className="w-4 h-4" />, color: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20' },
+  { id: 'website', label: 'Sito Web', icon: <Globe className="w-4 h-4" />, color: 'text-violet-400 bg-violet-400/10 border-violet-400/20' },
+];
 import { useRouter } from 'next/navigation';
 import { insforge } from '@/lib/insforge';
 import { ADMIN_EMAILS } from '@/lib/constants';
@@ -53,6 +71,7 @@ const EliteStatCard = ({ title, value, icon, sub, trend }: any) => (
 export default function AgentDashboardPage() {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
+  const [copiedTag, setCopiedTag] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
@@ -71,6 +90,8 @@ export default function AgentDashboardPage() {
   const [isPayoutLoading, setIsPayoutLoading] = useState(false);
   const [payoutMessage, setPayoutMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
   const [commissionPage, setCommissionPage] = useState(0);
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
+  const [customSource, setCustomSource] = useState('');
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
@@ -144,7 +165,7 @@ export default function AgentDashboardPage() {
       try {
         const { data: afData } = await insforge.database
           .from('profiles')
-          .select('id, full_name, username, updated_at')
+          .select('id, full_name, username, updated_at, referral_source')
           .eq('referred_by_agent_id', user.id);
 
         if (afData && afData.length > 0) {
@@ -191,11 +212,40 @@ export default function AgentDashboardPage() {
 
   const referralLink = `https://nickgastroguide.it/signup?ref=${profile?.referral_code || ''}`;
 
+  const getTaggedLink = (source?: string | null) => {
+    const base = referralLink;
+    if (source) return `${base}&src=${source}`;
+    return base;
+  };
+
+  const activeTaggedLink = useMemo(() => {
+    if (selectedSource === '__custom__') return getTaggedLink(customSource || null);
+    return getTaggedLink(selectedSource);
+  }, [selectedSource, customSource, referralLink]);
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const copyTaggedLink = (source: string) => {
+    navigator.clipboard.writeText(getTaggedLink(source));
+    setCopiedTag(source);
+    setTimeout(() => setCopiedTag(null), 2000);
+  };
+
+  // Source breakdown stats
+  const sourceBreakdown = useMemo(() => {
+    const counts: Record<string, number> = {};
+    affiliatedRestaurants.forEach(af => {
+      const src = af.referral_source || 'diretto';
+      counts[src] = (counts[src] || 0) + 1;
+    });
+    return Object.entries(counts)
+      .map(([source, count]) => ({ source, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [affiliatedRestaurants]);
 
   const handleRequestPayout = async (method: 'paypal' | 'bank_transfer') => {
     if (!currentUser) return;
@@ -389,7 +439,135 @@ export default function AgentDashboardPage() {
               </div>
             </div>
 
-            {/* Recent Commissions Preview */}
+            {/* ═══ LINK TRACCIAMENTO CON SOTTO-TAG ═══ */}
+            <div className="bg-[#121214] border border-white/5 rounded-[40px] p-10 mb-12">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                  <Link2 className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black tracking-tighter italic">Link Tracciamento</h2>
+                  <p className="text-zinc-500 text-xs mt-1">Crea link personalizzati per tracciare la fonte dei tuoi referral</p>
+                </div>
+              </div>
+
+              {/* Source Tag Selector */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
+                {SOURCE_TAGS.map((tag) => (
+                  <button
+                    key={tag.id}
+                    onClick={() => setSelectedSource(selectedSource === tag.id ? null : tag.id)}
+                    className={`flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all text-left group ${
+                      selectedSource === tag.id
+                        ? `${tag.color} border-current shadow-lg` 
+                        : 'bg-zinc-900/50 border-white/5 text-zinc-400 hover:border-white/10 hover:text-zinc-300'
+                    }`}
+                  >
+                    {tag.icon}
+                    <span className="text-xs font-bold">{tag.label}</span>
+                    {copiedTag === tag.id && (
+                      <CheckCircle2 className="w-3 h-3 ml-auto text-emerald-400" />
+                    )}
+                  </button>
+                ))}
+                {/* Custom Tag */}
+                <button
+                  onClick={() => setSelectedSource(selectedSource === '__custom__' ? null : '__custom__')}
+                  className={`flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all text-left ${
+                    selectedSource === '__custom__'
+                      ? 'bg-white/10 border-white/20 text-white shadow-lg'
+                      : 'bg-zinc-900/50 border-white/5 text-zinc-400 hover:border-white/10'
+                  }`}
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="text-xs font-bold">Custom</span>
+                </button>
+              </div>
+
+              {/* Custom Source Input */}
+              {selectedSource === '__custom__' && (
+                <div className="mb-6">
+                  <div className="relative group">
+                    <Tag className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-primary transition-colors" />
+                    <input
+                      type="text"
+                      value={customSource}
+                      onChange={(e) => setCustomSource(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
+                      placeholder="es: fiera-milano, evento-2026..."
+                      className="w-full bg-zinc-900/50 border border-white/5 py-4 pl-12 pr-6 rounded-2xl text-sm font-bold text-white focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-zinc-700"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Generated Link Preview */}
+              {selectedSource && (
+                <div className="bg-zinc-900/80 border border-white/5 rounded-2xl p-5 mb-6">
+                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Hash className="w-3 h-3" /> Link generato per: 
+                    <span className="text-primary">{selectedSource === '__custom__' ? (customSource || '...') : selectedSource}</span>
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <code className="flex-grow text-primary font-mono text-xs select-all truncate bg-black/30 px-4 py-3 rounded-xl">
+                      {activeTaggedLink}
+                    </code>
+                    <button
+                      onClick={() => {
+                        const src = selectedSource === '__custom__' ? customSource : selectedSource;
+                        if (src) copyTaggedLink(src);
+                      }}
+                      className="shrink-0 flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-primary/20"
+                    >
+                      {copiedTag ? <><CheckCircle2 className="w-3 h-3" /> Copiato!</> : <><Copy className="w-3 h-3" /> Copia</>}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Copy Buttons for all sources */}
+              <div className="border-t border-white/5 pt-6">
+                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4">Copia rapida per canale</p>
+                <div className="flex flex-wrap gap-2">
+                  {SOURCE_TAGS.map((tag) => (
+                    <button
+                      key={tag.id}
+                      onClick={() => copyTaggedLink(tag.id)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                        copiedTag === tag.id 
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                          : 'bg-zinc-900/50 border-white/5 text-zinc-500 hover:text-zinc-300 hover:border-white/10'
+                      }`}
+                    >
+                      {tag.icon}
+                      {copiedTag === tag.id ? 'Copiato!' : tag.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Source Breakdown */}
+              {sourceBreakdown.length > 0 && (
+                <div className="border-t border-white/5 pt-6 mt-6">
+                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4">Conversioni per fonte</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {sourceBreakdown.map(({ source, count }) => {
+                      const matchedTag = SOURCE_TAGS.find(t => t.id === source);
+                      return (
+                        <div key={source} className="bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 flex items-center gap-3">
+                          {matchedTag ? matchedTag.icon : <Globe className="w-4 h-4 text-zinc-500" />}
+                          <div>
+                            <p className="text-xs font-bold text-white capitalize">{source}</p>
+                            <p className="text-[10px] text-zinc-500 font-bold">{count} referral</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+
             <div className="mb-12">
               <div className="flex justify-between items-end gap-6 mb-8">
                 <div>
@@ -753,6 +931,19 @@ export default function AgentDashboardPage() {
                       </div>
                       
                       <div className="flex items-center gap-4">
+                        {/* Source Tag */}
+                        {af.referral_source && (
+                          <div className="text-right mr-2">
+                            <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mb-1">
+                              Fonte
+                            </p>
+                            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
+                              SOURCE_TAGS.find(t => t.id === af.referral_source)?.color || 'text-zinc-400 bg-zinc-400/10 border-zinc-400/20'
+                            }`}>
+                              {af.referral_source}
+                            </span>
+                          </div>
+                        )}
                         <div className="text-right mr-4">
                           <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mb-1">
                             Registrato

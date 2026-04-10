@@ -16,6 +16,7 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const referralCode = searchParams.get('ref');
+  const referralSource = searchParams.get('src');
   
   const [step, setStep] = useState(1); // 1: Acc datti, 2: Pagamento
   const [email, setEmail] = useState('');
@@ -108,9 +109,11 @@ function SignupContent() {
         try {
           await fetch('/api/track-referral', {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               referral_code: referralCode,
-              new_user_id: user.id
+              new_user_id: user.id,
+              source: referralSource || null
             })
           });
         } catch (refErr) {
