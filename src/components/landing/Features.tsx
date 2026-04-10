@@ -4,10 +4,10 @@ export default function Features() {
   return (
     <>
       {/* 3. NARRATIVE FEATURES */}
-      <section className="max-w-[1440px] mx-auto px-8 py-32" id="features">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-16 sm:py-32" id="features">
         <div className="text-center mb-24">
           <span className="font-label text-[10px] tracking-[0.3em] uppercase text-primary mb-4 block">L'Infrastruttura dell'Ospitalità</span>
-          <h2 className="font-headline text-5xl">Funzionalità per il futuro</h2>
+          <h2 className="font-headline text-3xl sm:text-5xl">Funzionalità per il futuro</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -69,10 +69,10 @@ export default function Features() {
 
       {/* 4. IMPACT SECTION */}
       <section className="bg-[#0e0e0e] py-32 overflow-hidden relative">
-        <div className="max-w-[1440px] mx-auto px-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
           <div className="flex flex-col md:flex-row gap-20 items-center">
             <div className="w-full md:w-1/2">
-              <h2 className="font-headline text-5xl mb-8">Social Sustainability & <br />SDG Impact</h2>
+              <h2 className="font-headline text-3xl sm:text-5xl mb-8">Social Sustainability & <br />SDG Impact</h2>
               <p className="text-on-surface-variant text-lg mb-12 leading-relaxed">
                 Ci impegniamo per un turismo che valorizza le persone e le tradizioni. Nick digitalizza il sapere culinario per non perderlo mai.
               </p>
@@ -112,7 +112,7 @@ export default function Features() {
       </section>
       
       {/* 7. TESTIMONIALS SECTION */}
-      <section className="max-w-[1440px] mx-auto px-8 py-32">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-16 sm:py-32">
         <h2 className="font-headline text-4xl mb-20 text-center italic">Voci dal territorio</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           <div className="flex flex-col md:flex-row gap-8 items-center">

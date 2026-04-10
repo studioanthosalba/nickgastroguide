@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 
@@ -18,6 +18,12 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Nick GastroGuide | L'Eccellenza Digitale per la Ristorazione",
   description: "Il concierge AI che vende i tuoi piatti e il tuo territorio, 24/7.",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 import ReferralTracker from "@/components/auth/ReferralTracker";

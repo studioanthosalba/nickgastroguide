@@ -268,8 +268,8 @@ export default function DashboardPage() {
 
     <div className="min-h-screen bg-black flex flex-col text-white selection:bg-primary/30 selection:text-primary font-sans">
       {/* Main Content */}
-      <main className="flex-grow p-10 bg-zinc-950/20 max-w-[1600px] w-full mx-auto overflow-y-auto custom-scrollbar">
-        <header className="flex justify-between items-center mb-10">
+      <main className="flex-grow p-4 sm:p-10 bg-zinc-950/20 max-w-[1600px] w-full mx-auto overflow-y-auto custom-scrollbar">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
           <div>
             <h1 className="text-3xl font-black tracking-tighter mb-1">Area Ristorante</h1>
             <p className="text-zinc-500 text-sm font-medium">Configura l'AI, il Menu e le azioni di Persuasione</p>
@@ -285,7 +285,7 @@ export default function DashboardPage() {
               <Bell className="w-5 h-5 text-zinc-400" />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-zinc-900" />
             </button>
-            <div className="flex items-center gap-3 bg-zinc-900 border border-white/5 px-4 py-2 rounded-2xl">
+              <div className="hidden sm:flex items-center gap-3 bg-zinc-900 border border-white/5 px-4 py-2 rounded-2xl">
               <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: primaryColor }} />
               <span className="text-sm font-bold text-zinc-200">{restaurantName || 'Il mio Ristorante'}</span>
             </div>

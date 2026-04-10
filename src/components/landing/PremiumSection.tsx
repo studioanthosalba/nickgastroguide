@@ -13,7 +13,7 @@ export default function PremiumSection() {
       <span className="absolute top-12 right-12 text-[8px] text-red-500/40 tracking-[0.2em] font-mono">[15.58_-220V]</span>
 
 
-      <div className="max-w-[1440px] mx-auto px-8 lg:px-12 relative z-10 flex flex-col lg:flex-row gap-12 lg:gap-8 items-start justify-between">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 relative z-10 flex flex-col lg:flex-row gap-12 lg:gap-8 items-start justify-between">
         
         {/* Left Column: Typography & CTAs & Trust Gallery */}
         <div className="w-full lg:w-[45%] flex flex-col pt-10">
@@ -50,7 +50,7 @@ export default function PremiumSection() {
               </div>
             </div>
             
-            <div className="grid grid-cols-4 grid-rows-2 gap-[1px] bg-white/10 max-w-lg border border-white/10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-2 sm:grid-rows-2 gap-[1px] bg-white/10 max-w-lg border border-white/10">
               {/* Trust Logos block (using placeholders for logos) */}
               {[...Array(8)].map((_, i) => (
                 <div key={i} className={`bg-[#0a0508] p-4 flex flex-col items-center justify-center text-center aspect-[4/3] relative ${i === 1 ? 'shadow-[inset_0_0_30px_rgba(220,38,38,0.3)] ring-1 ring-red-500 z-10' : 'opacity-60 hover:opacity-100 transition-opacity'}`}>
@@ -71,7 +71,7 @@ export default function PremiumSection() {
         <div className="w-full lg:w-[55%] flex flex-col items-center">
           
           {/* 3D Visualization Area (Placeholder for the red mesh table) */}
-          <div className="relative w-full aspect-[4/3] flex items-center justify-center mb-12 group">
+          <div className="relative w-full aspect-[4/3] hidden md:flex items-center justify-center mb-12 group">
             <div className="absolute inset-0 bg-red-500/5 blur-[100px] rounded-full"></div>
             {/* Hologram Box */}
             <div className="w-[80%] aspect-video m-auto relative transform perspective-1000 rotate-x-60 rotate-z-12 hover:rotate-x-[55deg] transition-transform duration-700 pointer-events-none border border-red-500/20 shadow-[0_0_150px_rgba(220,38,38,0.15)] flex items-center justify-center">

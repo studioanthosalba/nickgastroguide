@@ -5,7 +5,7 @@ export default function Footer() {
     <>
       {/* Footer */}
       <footer className="bg-[#131313] w-full border-t border-white/5">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-[1440px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-4 sm:px-12 py-20 max-w-[1440px] mx-auto">
           <div className="space-y-6">
             <div className="text-xl font-headline italic text-[#ffb59e]">Nick GastroGuide</div>
             <div className="space-y-2">

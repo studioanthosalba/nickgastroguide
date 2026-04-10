@@ -31,13 +31,13 @@ export default function Hero() {
       <div className="light-leak bottom-[-200px] right-[-200px]"></div>
       
       {/* 1. HERO SECTION */}
-      <section className="max-w-[1440px] mx-auto px-8 py-20 md:py-32 relative">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-20 md:py-32 relative">
         <div className="editorial-grid items-center">
-          <div className="col-span-12 md:col-span-7">
+          <div className="md:col-span-7">
             <span className="inline-block px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold tracking-[0.2em] uppercase mb-8">
               Studio Anthos Alba
             </span>
-            <h1 className="font-headline text-5xl md:text-7xl leading-[1.1] text-on-surface mb-8">
+            <h1 className="font-headline text-3xl sm:text-5xl md:text-7xl leading-[1.1] text-on-surface mb-8">
               Il concierge AI che <span className="italic text-primary font-light">vende</span> i tuoi piatti e il tuo territorio, 24/7.
             </h1>
             <p className="font-body text-xl text-on-surface-variant max-w-xl mb-12 leading-relaxed">
@@ -59,7 +59,7 @@ export default function Hero() {
             </div>
           </div>
           
-          <div className="col-span-12 md:col-span-5 relative mt-20 md:mt-0">
+          <div className="md:col-span-5 relative mt-20 md:mt-0">
             <div className="relative z-10 aspect-square overflow-hidden bg-surface-container rounded-full shadow-2xl border border-primary/10 group">
               <img alt="AI Chef" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2000ms]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTCRniNopbm8S0tHmSMJNWrhK0x4hgsFc6PQJRxM8zgUS0SHMnqPhanH_UN3aGEFY-6jvwgPcy0dpU8eIkNxQpyIG0czKdlIo1BmjU6UXOLTXR5TyptVC4X0GZdAOPhifb2p8l-vVU_QhTNsEKnpRRQaBMGLn8F3DlXPIwscWLYmr9yMnFK32SwJgACvwflCfgFqSqPnKE2n5GQrVlKA0GwkO4iICDFRKgW7j6Ldgo8fA_ZW713XauwF8QWmc5QSUE3GdsEJfBiOE" />
             </div>
@@ -93,7 +93,7 @@ export default function Hero() {
         <div className="max-w-[1440px] mx-auto px-8">
           <div className="editorial-grid">
             {/* Text Area */}
-            <div className="col-span-12 lg:col-span-5 mb-20 lg:mb-0">
+            <div className="md:col-span-5 mb-20 lg:mb-0">
               <h2 className="font-headline text-4xl mb-12">
                 Il paradosso della <br />
                 <span className="italic text-secondary">ristorazione moderna</span>
@@ -115,7 +115,7 @@ export default function Hero() {
             </div>
 
             {/* Video Area */}
-            <div className="col-span-12 lg:col-start-6 lg:col-span-7">
+            <div className="md:col-start-6 md:col-span-7">
               <div className="bg-surface-container-high p-8 md:p-12 relative overflow-hidden flex flex-col items-center">
                 <div className="text-center mb-12 w-full max-w-2xl">
                   <div className="flex justify-center flex-row items-center gap-4 mb-4">
@@ -137,11 +137,12 @@ export default function Hero() {
                       <div className="video-container">
                         <iframe 
                           ref={iframeRef}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                           allowFullScreen 
-                          frameBorder="0" 
-                          src="https://www.youtube.com/embed/DCgX9abrCyc?autoplay=1&mute=1&loop=1&playlist=DCgX9abrCyc&controls=0&modestbranding=1&enablejsapi=1" 
-                          title="Nick GastroGuide Demo" 
+                          frameBorder="0"
+                          style={{ pointerEvents: 'none' }}
+                          src="https://www.youtube.com/embed/DCgX9abrCyc?autoplay=1&mute=1&loop=1&playlist=DCgX9abrCyc&controls=0&modestbranding=1&enablejsapi=1&playsinline=1" 
+                          title="Nick GastroGuide Demo"
                         />
                       </div>
                     </div>

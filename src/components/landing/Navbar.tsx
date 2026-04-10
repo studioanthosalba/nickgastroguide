@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { insforge } from '@/lib/insforge';
 import { ADMIN_EMAILS } from '@/lib/constants';
-import { ShieldCheck, User, LogOut, ChevronDown } from 'lucide-react';
+import { ShieldCheck, User, LogOut, ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -21,8 +22,6 @@ export default function Navbar() {
       }
     };
     checkUser();
-    
-    // Subscribe to auth changes if needed, but for now standard session is fine
   }, []);
 
   const handleLogout = async () => {
@@ -32,8 +31,8 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 dark:bg-[#131313]/98 backdrop-blur-xl border-b border-white/5 shadow-2xl">
-      <div className="flex justify-between items-center px-8 py-5 max-w-[1440px] mx-auto">
-        <Link href="/" className="text-2xl font-headline italic text-[#ffb59e] font-black tracking-tighter">
+      <div className="flex justify-between items-center px-4 sm:px-8 py-4 sm:py-5 max-w-[1440px] mx-auto">
+        <Link href="/" className="text-xl sm:text-2xl font-headline italic text-[#ffb59e] font-black tracking-tighter">
           Nick GastroGuide
         </Link>
         
@@ -43,7 +42,7 @@ export default function Navbar() {
           <Link className="text-white/60 hover:text-white transition-colors font-label text-xs font-bold tracking-widest uppercase" href="/#pricing">Pricing</Link>
         </div>
 
-        <div className="flex gap-6 items-center">
+        <div className="flex gap-4 sm:gap-6 items-center">
           {!user ? (
             <>
               <Link href="/login" className="text-white/70 hover:text-white font-label text-xs font-black uppercase tracking-widest transition-all">
@@ -57,7 +56,7 @@ export default function Navbar() {
             <div className="relative">
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="flex items-center gap-3 bg-white/5 border border-white/10 pl-2 pr-4 py-2 rounded-2xl hover:bg-white/10 transition-all group"
+                className="flex items-center gap-2 sm:gap-3 bg-white/5 border border-white/10 pl-2 pr-3 sm:pr-4 py-2 rounded-2xl hover:bg-white/10 transition-all group"
               >
                 <div className="w-8 h-8 bg-[#ffb59e]/20 rounded-xl flex items-center justify-center text-[#ffb59e] text-xs font-black">
                   {user.email?.[0].toUpperCase()}
@@ -101,8 +100,39 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
           )}
+
+          {/* Mobile hamburger */}
+          <button 
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+            className="md:hidden p-2 text-white/70 hover:text-white transition-colors"
+          >
+            {isMobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Nav Panel */}
+      <AnimatePresence>
+        {isMobileNavOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden overflow-hidden border-t border-white/5 bg-[#131313]/98"
+          >
+            <div className="px-6 py-6 space-y-4">
+              <Link onClick={() => setIsMobileNavOpen(false)} className="block text-[#ffb59e] font-bold font-label text-xs tracking-widest uppercase py-3" href="/#features">Features</Link>
+              <Link onClick={() => setIsMobileNavOpen(false)} className="block text-white/60 font-label text-xs font-bold tracking-widest uppercase py-3" href="/#how-it-works">How it Works</Link>
+              <Link onClick={() => setIsMobileNavOpen(false)} className="block text-white/60 font-label text-xs font-bold tracking-widest uppercase py-3" href="/#pricing">Pricing</Link>
+              {!user && (
+                <Link onClick={() => setIsMobileNavOpen(false)} href="/affiliation" className="block w-full text-center px-7 py-3 bg-primary text-black font-label text-[10px] font-black uppercase tracking-[0.2em] mt-4">
+                  lavora con noi
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

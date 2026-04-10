@@ -2,7 +2,7 @@ export default function Pricing() {
   return (
     <>
       {/* 6. PRICING SECTION */}
-      <section className="bg-primary-container py-32 px-8" id="pricing">
+      <section className="bg-primary-container py-16 sm:py-32 px-4 sm:px-8" id="pricing">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-headline text-4xl md:text-5xl text-on-primary-container mb-8">
             Se ti porta anche solo <span className="underline decoration-on-primary-container/30 decoration-4 underline-offset-8">1 tavolo</span> in più al giorno, Nick si ripaga da solo.

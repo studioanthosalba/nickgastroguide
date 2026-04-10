@@ -2,7 +2,7 @@ export default function HowItWorks() {
   return (
     <>
       {/* 5. PROCESS SECTION */}
-      <section className="max-w-[1440px] mx-auto px-8 py-32" id="how-it-works">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-16 sm:py-32" id="how-it-works">
         <h2 className="font-headline text-4xl mb-20 text-center">Da zero a AI in <span className="text-primary italic">5 minuti</span></h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant/10">
           <div className="bg-surface p-12 group hover:bg-surface-container-low transition-colors w-full h-full block">
