@@ -2,27 +2,99 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Volume2, VolumeX } from 'lucide-react';
+
+// Declare YouTube IFrame API types
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 export default function Hero() {
   const [isMuted, setIsMuted] = useState(true);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [playerReady, setPlayerReady] = useState(false);
+  const playerRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Load YouTube IFrame API
+  useEffect(() => {
+    // If API already loaded, create player directly
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+      return;
+    }
+
+    // Load the API script
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode?.insertBefore(tag, firstScript);
+
+    // API will call this when ready
+    window.onYouTubeIframeAPIReady = () => {
+      createPlayer();
+    };
+
+    return () => {
+      if (playerRef.current?.destroy) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const createPlayer = useCallback(() => {
+    if (playerRef.current) return; // Already created
+
+    playerRef.current = new window.YT.Player('yt-player', {
+      videoId: 'DCgX9abrCyc',
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        loop: 1,
+        playlist: 'DCgX9abrCyc',
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        fs: 0,
+        disablekb: 1,
+      },
+      events: {
+        onReady: (event: any) => {
+          setPlayerReady(true);
+          event.target.playVideo();
+        },
+        onStateChange: (event: any) => {
+          // If video paused/ended unexpectedly on mobile, restart it
+          if (event.data === window.YT.PlayerState.PAUSED || 
+              event.data === window.YT.PlayerState.ENDED) {
+            event.target.playVideo();
+          }
+        }
+      }
+    });
+  }, []);
 
   const toggleAudio = () => {
-    if (!iframeRef.current) return;
-    
-    // Using YouTube PostMessage API to toggle mute
-    const command = isMuted ? 'unMute' : 'mute';
-    iframeRef.current.contentWindow?.postMessage(
-      JSON.stringify({ event: 'command', func: command, args: '' }),
-      '*'
-    );
-    
-    // We remove the playVideo call because it's already autoplaying/looping.
-    // Redundant calls can cause "freezes" on some mobile browsers when unmuting.
-    
-    setIsMuted(!isMuted);
+    if (!playerRef.current || !playerReady) return;
+
+    try {
+      if (isMuted) {
+        playerRef.current.unMute();
+        playerRef.current.setVolume(100);
+        // Force play in case mobile paused it
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.mute();
+      }
+      setIsMuted(!isMuted);
+    } catch (e) {
+      console.warn('YouTube player control error:', e);
+    }
   };
 
   return (
@@ -90,7 +162,7 @@ export default function Hero() {
 
       {/* 2. PROBLEM & TRANSFORMATION SECTION */}
       <section className="bg-surface-container-low py-32" id="demo">
-        <div className="max-w-[1440px] mx-auto px-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
           <div className="editorial-grid">
             {/* Text Area */}
             <div className="md:col-span-5 mb-20 lg:mb-0">
@@ -116,7 +188,7 @@ export default function Hero() {
 
             {/* Video Area */}
             <div className="md:col-start-6 md:col-span-7">
-              <div className="bg-surface-container-high p-8 md:p-12 relative overflow-hidden flex flex-col items-center">
+              <div className="bg-surface-container-high p-4 sm:p-8 md:p-12 relative overflow-hidden flex flex-col items-center">
                 <div className="text-center mb-12 w-full max-w-2xl">
                   <div className="flex justify-center flex-row items-center gap-4 mb-4">
                     <h3 className="font-headline text-3xl md:text-4xl text-center">La trasformazione con Nick</h3>
@@ -125,32 +197,18 @@ export default function Hero() {
                   <p className="text-xl text-on-surface italic mb-10">"Nick non sostituisce l'umano, gli regala superpoteri."</p>
                 </div>
 
-                <div className="w-full max-w-[500px] mx-auto mb-16 relative">
-                  <div className="glass-panel rounded-[3.5rem] p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20 transform-gpu" style={{ transform: 'translate3d(0,0,0)', willChange: 'transform' }}>
+                <div className="w-full max-w-[500px] mx-auto mb-16 relative" ref={containerRef}>
+                  <div className="glass-panel rounded-[2rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20 transform-gpu" style={{ transform: 'translate3d(0,0,0)', willChange: 'transform' }}>
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
                       <div className="bg-primary/20 backdrop-blur-md px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
                         <span className="font-label text-xs font-bold text-primary tracking-widest uppercase">Live Experience</span>
                       </div>
                     </div>
-                    <div className="bg-surface-container-lowest h-full w-full rounded-[3rem] overflow-hidden border border-white/5 shadow-inner">
-                      <div className="video-container relative">
-                        <iframe 
-                          ref={iframeRef}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                          allowFullScreen 
-                          frameBorder="0"
-                          src="https://www.youtube.com/embed/DCgX9abrCyc?autoplay=1&mute=1&loop=1&playlist=DCgX9abrCyc&controls=0&modestbranding=1&enablejsapi=1&playsinline=1&rel=0" 
-                          title="Nick GastroGuide Demo"
-                        />
-                        {/* Transparent overlay to prevent mobile touch events from reaching YouTube iframe.
-                            This fixes the audio freeze bug on mobile where Chrome's touch/scroll events 
-                            passed to the iframe cause YouTube's internal player to pause/freeze. */}
-                        <div 
-                          className="absolute inset-0 z-10" 
-                          style={{ touchAction: 'pan-y' }}
-                          aria-hidden="true"
-                        />
+                    <div className="bg-surface-container-lowest h-full w-full rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden border border-white/5 shadow-inner">
+                      <div className="video-container">
+                        {/* YouTube IFrame API target div */}
+                        <div id="yt-player" />
                       </div>
                     </div>
                     
@@ -233,4 +291,5 @@ export default function Hero() {
     </>
   );
 }
+
 
