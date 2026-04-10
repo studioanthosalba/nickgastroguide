@@ -138,7 +138,7 @@ export default function Hero() {
                       <video
                         ref={videoRef}
                         className="w-full block pointer-events-none"
-                        style={{ aspectRatio: '9/16' }}
+                        style={{ aspectRatio: '9/16', transform: 'translateZ(0)', willChange: 'transform' }}
                         autoPlay
                         muted
                         loop
@@ -152,7 +152,7 @@ export default function Hero() {
                     {/* Floating Audio Controls */}
                     <button 
                       onClick={toggleAudio}
-                      className="absolute top-6 right-6 z-30 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-primary hover:text-black hover:scale-110 active:scale-95 transition-all shadow-xl group"
+                      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-primary hover:text-black active:scale-95 transition-all shadow-xl group"
                     >
                       {isMuted ? (
                         <VolumeX className="w-5 h-5 text-white group-hover:text-black transition-colors" />
@@ -166,21 +166,17 @@ export default function Hero() {
                         </div>
                       )}
                     </button>
-
-                    <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-full text-center space-y-6">
-                      <div>
-                        <span className="font-headline italic text-2xl text-primary block mb-1">Guarda la video presentazione</span>
-                        <span className="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">L&apos;esperienza reale che aumenta il fatturato</span>
-                      </div>
-                      
-                      <button 
-                        onClick={toggleAudio}
-                        className="flex items-center justify-center gap-3 px-6 py-3 mx-auto bg-surface-container-highest border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all group"
-                      >
-                        {isMuted ? <Volume2 className="w-4 h-4 text-primary" /> : <VolumeX className="w-4 h-4 text-primary-container" />}
-                        {isMuted ? 'Attiva Audio Demo' : 'Disattiva Audio'}
-                      </button>
+                  </div>
+                  
+                  {/* Premium Integrated Text Below Video */}
+                  <div className="mt-8 flex flex-col items-center justify-center text-center">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface-container-high border border-white/5 mb-4 shadow-sm">
+                       <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: '"FILL" 1' }}>play_circle</span>
+                       <span className="font-label text-xs text-on-surface-variant uppercase tracking-widest font-bold">Guarda l'esperienza reale</span>
                     </div>
+                    <p className="text-sm sm:text-base text-on-surface-variant max-w-[280px] sm:max-w-sm italic opacity-80 leading-relaxed">
+                      Ascolta come Nick aumenta lo scontrino medio interagendo con i tuoi clienti in sala.
+                    </p>
                   </div>
                 </div>
 
