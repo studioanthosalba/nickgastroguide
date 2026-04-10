@@ -134,15 +134,22 @@ export default function Hero() {
                       </div>
                     </div>
                     <div className="bg-surface-container-lowest h-full w-full rounded-[3rem] overflow-hidden border border-white/5 shadow-inner">
-                      <div className="video-container">
+                      <div className="video-container relative">
                         <iframe 
                           ref={iframeRef}
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                           allowFullScreen 
                           frameBorder="0"
-                          style={{ pointerEvents: 'none' }}
-                          src="https://www.youtube.com/embed/DCgX9abrCyc?autoplay=1&mute=1&loop=1&playlist=DCgX9abrCyc&controls=0&modestbranding=1&enablejsapi=1&playsinline=1" 
+                          src="https://www.youtube.com/embed/DCgX9abrCyc?autoplay=1&mute=1&loop=1&playlist=DCgX9abrCyc&controls=0&modestbranding=1&enablejsapi=1&playsinline=1&rel=0" 
                           title="Nick GastroGuide Demo"
+                        />
+                        {/* Transparent overlay to prevent mobile touch events from reaching YouTube iframe.
+                            This fixes the audio freeze bug on mobile where Chrome's touch/scroll events 
+                            passed to the iframe cause YouTube's internal player to pause/freeze. */}
+                        <div 
+                          className="absolute inset-0 z-10" 
+                          style={{ touchAction: 'pan-y' }}
+                          aria-hidden="true"
                         />
                       </div>
                     </div>

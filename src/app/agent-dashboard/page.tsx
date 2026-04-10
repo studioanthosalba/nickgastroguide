@@ -396,19 +396,19 @@ export default function AgentDashboardPage() {
             </div>
 
             {/* Referral Card */}
-            <div className="bg-[#121214] border border-white/5 rounded-[40px] p-10 relative overflow-hidden mb-12">
+            <div className="bg-[#121214] border border-white/5 rounded-[24px] sm:rounded-[40px] p-4 sm:p-10 relative overflow-hidden mb-12">
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -mr-32 -mt-32 pointer-events-none" />
               
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
                 <div className="flex-grow">
                   <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">Accesso Esclusivo</span>
-                  <h2 className="text-4xl font-black mb-4 tracking-tighter italic">Il Tuo Link Affiliate</h2>
+                  <h2 className="text-2xl sm:text-4xl font-black mb-4 tracking-tighter italic">Il Tuo Link Affiliate</h2>
                   <p className="text-zinc-400 text-sm mb-10 max-w-lg leading-relaxed">
                     Condividi questo link con i ristoratori per guadagnare il 40% sulla prima attivazione e il 10% su ogni rinnovo mensile.
                   </p>
                   
-                  <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 border border-white/5 p-2 rounded-2xl group focus-within:border-primary/20 transition-all">
-                    <span className="px-6 py-2 text-primary font-mono text-xs select-all truncate max-w-full overflow-hidden">
+                  <div className="flex flex-col gap-3 bg-white/5 border border-white/5 p-2 rounded-2xl group focus-within:border-primary/20 transition-all">
+                    <span className="px-4 sm:px-6 py-2 text-primary font-mono text-[10px] sm:text-xs select-all break-all overflow-hidden">
                       {referralLink}
                     </span>
                     <button 
@@ -440,7 +440,7 @@ export default function AgentDashboardPage() {
             </div>
 
             {/* ═══ LINK TRACCIAMENTO CON SOTTO-TAG ═══ */}
-            <div className="bg-[#121214] border border-white/5 rounded-[40px] p-10 mb-12">
+            <div className="bg-[#121214] border border-white/5 rounded-[24px] sm:rounded-[40px] p-4 sm:p-10 mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                   <Link2 className="w-6 h-6 text-primary" />
@@ -586,15 +586,15 @@ export default function AgentDashboardPage() {
                 )}
               </div>
 
-              <div className="bg-[#121214] border border-white/5 rounded-[40px] overflow-hidden">
+              <div className="bg-[#121214] border border-white/5 rounded-[24px] sm:rounded-[40px] overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-white/5">
-                      <th className="px-10 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Ristorante</th>
-                      <th className="px-10 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Data</th>
-                      <th className="px-10 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Tipo</th>
-                      <th className="px-10 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Commissione</th>
-                      <th className="px-10 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Stato</th>
+                      <th className="px-4 sm:px-10 py-4 sm:py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">Ristorante</th>
+                      <th className="px-4 sm:px-10 py-4 sm:py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">Data</th>
+                      <th className="px-4 sm:px-10 py-4 sm:py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">Tipo</th>
+                      <th className="px-4 sm:px-10 py-4 sm:py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">Commissione</th>
+                      <th className="px-4 sm:px-10 py-4 sm:py-6 text-[10px] font-black text-zinc-500 uppercase tracking-widest whitespace-nowrap">Stato</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -1057,7 +1057,7 @@ export default function AgentDashboardPage() {
       </aside>
 
       {/* Main Workspace */}
-      <main className="flex-grow p-8 lg:p-12 max-w-[1600px] mx-auto w-full">
+      <main className="flex-grow p-4 sm:p-8 lg:p-12 max-w-[1600px] mx-auto w-full overflow-x-hidden">
         
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
