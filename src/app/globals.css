@@ -89,20 +89,12 @@
   .video-container {
     position: relative;
     width: 100%;
-    padding-bottom: 177.77%;
-    height: 0;
-    overflow: hidden;
-    border-radius: 2rem;
   }
 
-  .video-container iframe,
-  .video-container > div {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    border: none;
+  .video-container video {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   /* Hide scrollbars on mobile for horizontal scroll areas */

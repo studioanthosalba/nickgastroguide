@@ -1,100 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Volume2, VolumeX } from 'lucide-react';
-
-// Declare YouTube IFrame API types
-declare global {
-  interface Window {
-    YT: any;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
+import { useState, useRef } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export default function Hero() {
   const [isMuted, setIsMuted] = useState(true);
-  const [playerReady, setPlayerReady] = useState(false);
-  const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Load YouTube IFrame API
-  useEffect(() => {
-    // If API already loaded, create player directly
-    if (window.YT && window.YT.Player) {
-      createPlayer();
-      return;
-    }
-
-    // Load the API script
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScript = document.getElementsByTagName('script')[0];
-    firstScript.parentNode?.insertBefore(tag, firstScript);
-
-    // API will call this when ready
-    window.onYouTubeIframeAPIReady = () => {
-      createPlayer();
-    };
-
-    return () => {
-      if (playerRef.current?.destroy) {
-        playerRef.current.destroy();
-      }
-    };
-  }, []);
-
-  const createPlayer = useCallback(() => {
-    if (playerRef.current) return; // Already created
-
-    playerRef.current = new window.YT.Player('yt-player', {
-      videoId: 'DCgX9abrCyc',
-      playerVars: {
-        autoplay: 1,
-        mute: 1,
-        loop: 1,
-        playlist: 'DCgX9abrCyc',
-        controls: 0,
-        modestbranding: 1,
-        playsinline: 1,
-        rel: 0,
-        showinfo: 0,
-        fs: 0,
-        disablekb: 1,
-      },
-      events: {
-        onReady: (event: any) => {
-          setPlayerReady(true);
-          event.target.playVideo();
-        },
-        onStateChange: (event: any) => {
-          // If video paused/ended unexpectedly on mobile, restart it
-          if (event.data === window.YT.PlayerState.PAUSED || 
-              event.data === window.YT.PlayerState.ENDED) {
-            event.target.playVideo();
-          }
-        }
-      }
-    });
-  }, []);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const toggleAudio = () => {
-    if (!playerRef.current || !playerReady) return;
-
-    try {
-      if (isMuted) {
-        playerRef.current.unMute();
-        playerRef.current.setVolume(100);
-        // Force play in case mobile paused it
-        playerRef.current.playVideo();
-      } else {
-        playerRef.current.mute();
-      }
-      setIsMuted(!isMuted);
-    } catch (e) {
-      console.warn('YouTube player control error:', e);
+    if (!videoRef.current) return;
+    
+    if (isMuted) {
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
+      // Force play in case mobile paused it
+      videoRef.current.play().catch(() => {});
+    } else {
+      videoRef.current.muted = true;
     }
+    setIsMuted(!isMuted);
   };
 
   return (
@@ -194,11 +119,11 @@ export default function Hero() {
                     <h3 className="font-headline text-3xl md:text-4xl text-center">La trasformazione con Nick</h3>
                     <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: '"FILL" 1' }}>auto_awesome</span>
                   </div>
-                  <p className="text-xl text-on-surface italic mb-10">"Nick non sostituisce l'umano, gli regala superpoteri."</p>
+                  <p className="text-xl text-on-surface italic mb-10">&quot;Nick non sostituisce l&apos;umano, gli regala superpoteri.&quot;</p>
                 </div>
 
-                <div className="w-full max-w-[500px] mx-auto mb-16 relative" ref={containerRef}>
-                  <div className="glass-panel rounded-[2rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20 transform-gpu" style={{ transform: 'translate3d(0,0,0)', willChange: 'transform' }}>
+                <div className="w-full max-w-[500px] mx-auto mb-16 relative">
+                  <div className="glass-panel rounded-[2rem] sm:rounded-[3.5rem] p-2 sm:p-4 shadow-[0_0_80px_rgba(255,181,158,0.1)] border border-primary/20">
                     <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
                       <div className="bg-primary/20 backdrop-blur-md px-6 py-2 rounded-full border border-primary/30 flex items-center gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
@@ -206,10 +131,20 @@ export default function Hero() {
                       </div>
                     </div>
                     <div className="bg-surface-container-lowest h-full w-full rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden border border-white/5 shadow-inner">
-                      <div className="video-container">
-                        {/* YouTube IFrame API target div */}
-                        <div id="yt-player" />
-                      </div>
+                      {/* Native HTML5 Video - works perfectly on mobile */}
+                      <video
+                        ref={videoRef}
+                        className="w-full h-full object-cover"
+                        style={{ aspectRatio: '9/16' }}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        poster=""
+                      >
+                        <source src="/nick-demo.mp4" type="video/mp4" />
+                      </video>
                     </div>
                     
                     {/* Floating Audio Controls */}
@@ -233,28 +168,16 @@ export default function Hero() {
                     <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-full text-center space-y-6">
                       <div>
                         <span className="font-headline italic text-2xl text-primary block mb-1">Guarda la video presentazione</span>
-                        <span className="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">L'esperienza reale che aumenta il fatturato</span>
+                        <span className="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">L&apos;esperienza reale che aumenta il fatturato</span>
                       </div>
                       
-                      <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <button 
-                          onClick={toggleAudio}
-                          className="flex items-center justify-center gap-3 px-6 py-3 bg-surface-container-highest border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all group"
-                        >
-                          {isMuted ? <Volume2 className="w-4 h-4 text-primary" /> : <VolumeX className="w-4 h-4 text-primary-container" />}
-                          {isMuted ? 'Attiva Audio Demo' : 'Disattiva Audio'}
-                        </button>
-                        
-                        <a 
-                          href="https://www.youtube.com/watch?v=DCgX9abrCyc" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-3 px-6 py-3 bg-primary text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-primary/20"
-                        >
-                          <Play className="w-4 h-4" />
-                          Guarda su YouTube
-                        </a>
-                      </div>
+                      <button 
+                        onClick={toggleAudio}
+                        className="flex items-center justify-center gap-3 px-6 py-3 mx-auto bg-surface-container-highest border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all group"
+                      >
+                        {isMuted ? <Volume2 className="w-4 h-4 text-primary" /> : <VolumeX className="w-4 h-4 text-primary-container" />}
+                        {isMuted ? 'Attiva Audio Demo' : 'Disattiva Audio'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -291,5 +214,3 @@ export default function Hero() {
     </>
   );
 }
-
-
