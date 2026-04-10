@@ -262,23 +262,12 @@ export default function SecretAdminPage() {
         // 1. Generate a strong random temp password
         const tempPassword = 'Tmp_' + Math.random().toString(36).substring(2, 10) + '!' + Date.now().toString(36);
         
-        // 2. Set temp password via existing admin RPC
-        const response = await insforge.functions.invoke('admin-manage-user', {
-          body: { 
-            action: 'set_password', 
-            targetEmail,
-            targetPassword: tempPassword
-          }
+        // 2. Set temp password via direct RPC call
+        const { error: rpcError } = await insforge.database.rpc('admin_set_password', {
+          p_user_email: targetEmail,
+          p_new_password: tempPassword
         });
-
-        console.log('Switch response:', JSON.stringify(response));
-
-        // Handle various error formats from InsForge
-        if (response.error) {
-          const errMsg = typeof response.error === 'string' ? response.error : response.error.message || JSON.stringify(response.error);
-          throw new Error(errMsg);
-        }
-        if (response.data?.error) throw new Error(response.data.error);
+        if (rpcError) throw rpcError;
         
         // 3. Sign out current admin session
         await insforge.auth.signOut();
@@ -326,13 +315,14 @@ export default function SecretAdminPage() {
     const newPassword = prompt(`Nuova password per ${userEmail}:`);
     if (!newPassword) return;
     try {
-      const response = await insforge.functions.invoke('admin-manage-user', {
-        body: { action: 'set_password', targetEmail: userEmail, targetPassword: newPassword }
+      const { error } = await insforge.database.rpc('admin_set_password', {
+        p_user_email: userEmail,
+        p_new_password: newPassword
       });
-      if (response.error) throw new Error(response.error.message);
-      alert("Password aggiornata.");
+      if (error) throw error;
+      alert(`Password aggiornata per ${userEmail}.`);
     } catch (err: any) {
-      alert("Errore: " + err.message);
+      alert("Errore: " + (err?.message || 'Errore sconosciuto'));
     }
   };
 
